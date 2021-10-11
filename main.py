@@ -2,7 +2,8 @@ def print_menu():
     print("1. Citire date")
     print("2. Determinare cea mai lunga subsecventa cu proprietatea ca produsul numerelor este impar")
     print("3. Determinare cea mai lunga subsecventa cu proprietatea ca concatenarea numerelor din subsecventa are cifrele in ordine crescatoare")
-    print("4. Iesire")
+    print("4. Determina cea mai lunga subsecventa cu proprietatea ca toate numerele sunt prime")
+    print("5. Iesire")
 
 def citire_lista():
     l = []
@@ -10,6 +11,7 @@ def citire_lista():
     for i in range(n):
         l.append(int(input("l[" + str(i) + "]=")))
     return l
+
 
 def produsul_numerelor_este_impar(l):
     '''
@@ -103,11 +105,66 @@ def test_get_longest_concat_digits_asc():
     assert get_longest_concat_digits_asc([9,7,4,3]) == [9]
     assert get_longest_concat_digits_asc([4,4,2,1,2]) == [4,4]
 
+def is_prime(x):
+    '''
+    Verifica daca un numar este prim
+    :param x: un numar intreg
+    :return: True, daca x este prim, False in caz contrar
+    '''
+    if x<2:
+        return False
+    for i in range(2,x//2+1):
+        if x%i==0:
+            return False
+    return True
+
+def test_is_prime():
+    assert is_prime(2) == True
+    assert is_prime(1) == False
+    assert is_prime(23) == True
+
+def toate_numere_prime(l):
+    '''
+    Verifica daca numerele dintr-o lista sunt prime
+    :param l: o lista de numere intregi
+    :return: True, daca toate numerele din lista sunt prime, False in caz contrar
+    '''
+    for x in l:
+        if is_prime(x) == False:
+            return False
+    return True
+
+def test_toate_numere_prime():
+    assert toate_numere_prime([1, 2, 3, 4, 5]) == False
+    assert toate_numere_prime([2, 3, 5]) == True
+    assert toate_numere_prime([23]) == True
+
+def get_longest_all_primes(l):
+    '''
+    Determina cea mai lunga subsecventa cu proprietatea ca toate numerele sunt prime
+    :param l: o lista de numere intregi
+    :return: cea mai lunga subsecventa din l cu proprietatea ca toate numerele sunt prime
+    '''
+    subsecventa_maxima = []
+    for i in range(len(l)):
+        for j in range(i,len(l)):
+            if toate_numere_prime(l[i:j+1]) and len(subsecventa_maxima) < len(l[i:j+1]):
+                subsecventa_maxima = l[i:j+1]
+    return subsecventa_maxima
+
+def test_get_longest_all_primes():
+    assert get_longest_all_primes([1, 2, 3, 5]) == [2, 3, 5]
+    assert get_longest_all_primes([1, 2, 3, 4, 5]) == [2, 3]
+    assert get_longest_all_primes([1, 4, 6, 8, 10]) == []
+
 def main():
     test_produsul_numerelor_este_impar()
     test_get_longest_product_is_odd()
     test_concatenarea_numerelor_ordine_crescatoare()
     test_get_longest_concat_digits_asc()
+    test_is_prime()
+    test_toate_numere_prime()
+    test_get_longest_all_primes()
     l = []
     while True:
         print_menu()
@@ -119,6 +176,8 @@ def main():
         elif optiune == 3:
             print(get_longest_concat_digits_asc(l))
         elif optiune == 4:
+            print(get_longest_all_primes(l))
+        elif optiune == 5:
             break
         else:
             print("Optiune gresita! Reincercati!")
